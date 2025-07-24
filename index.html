@@ -375,8 +375,8 @@
             document.getElementById('messageBox').style.display = 'none';
         });
 
-        // Main function that runs after the page is loaded
-        document.addEventListener('DOMContentLoaded', async () => {
+        // Use window.onload to ensure all content is ready before running scripts
+        window.onload = function() {
             // Initialize Firebase
             try {
                 app = initializeApp(firebaseConfig);
@@ -530,7 +530,7 @@
                     }
                 });
             }
-        });
+        };
     </script>
 </body>
 </html>
