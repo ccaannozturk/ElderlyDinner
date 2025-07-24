@@ -375,9 +375,55 @@
             document.getElementById('messageBox').style.display = 'none';
         });
 
-        // Use window.onload to ensure all content is ready before running scripts
-        window.onload = function() {
-            // Initialize Firebase
+        // This function sets up listeners that don't depend on Firebase
+        function setupStaticListeners() {
+            console.log("Setting up menu listeners...");
+            const menuModal = document.getElementById('menuModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            const dinnerMenuBtn = document.getElementById('dinnerMenuBtn');
+            const drinksMenuBtn = document.getElementById('drinksMenuBtn');
+            const closeModalBtn = document.querySelector('.close-button');
+
+            if (dinnerMenuBtn) {
+                dinnerMenuBtn.addEventListener('click', () => {
+                    modalTitle.textContent = 'Dinner Menu';
+                    modalBody.innerHTML = document.getElementById('dinner-menu-content').innerHTML;
+                    menuModal.style.display = 'flex';
+                });
+            } else {
+                 console.error("Dinner menu button not found!");
+            }
+
+            if (drinksMenuBtn) {
+                drinksMenuBtn.addEventListener('click', () => {
+                    modalTitle.textContent = 'Drinks Menu';
+                    modalBody.innerHTML = document.getElementById('drinks-menu-content').innerHTML;
+                    menuModal.style.display = 'flex';
+                });
+            } else {
+                console.error("Drinks menu button not found!");
+            }
+
+            const closeModal = () => {
+                menuModal.style.display = 'none';
+            };
+
+            if(closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+            
+            window.addEventListener('click', (event) => {
+                if (event.target == menuModal) {
+                    closeModal();
+                }
+            });
+        }
+
+        // Run static listeners as soon as the DOM is ready
+        document.addEventListener('DOMContentLoaded', setupStaticListeners);
+
+
+        // This function initializes Firebase and sets up dependent listeners
+        function initializeFirebaseAndRsvp() {
             try {
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
@@ -386,6 +432,7 @@
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         userId = user.uid;
+                        setupRsvpListener(); // Setup RSVP button now that we have a user
                         loadRsvps();
                     } else {
                         signInAnonymously(auth).catch(authError => {
@@ -394,143 +441,119 @@
                         });
                     }
                 });
-
             } catch (error) {
                 console.error("Fatal Error: Could not initialize Firebase.", error);
                 showMessageBox("Failed to initialize the app. Please check your Firebase configuration and internet connection.");
             }
+        }
+        
+        // Call the Firebase initialization function
+        initializeFirebaseAndRsvp();
 
-            // --- Menu Modal Logic ---
-            const menuModal = document.getElementById('menuModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalBody = document.getElementById('modalBody');
-            const dinnerMenuBtn = document.getElementById('dinnerMenuBtn');
-            const drinksMenuBtn = document.getElementById('drinksMenuBtn');
-            const closeModalBtn = document.querySelector('.close-button');
 
-            dinnerMenuBtn.addEventListener('click', () => {
-                modalTitle.textContent = 'Dinner Menu';
-                modalBody.innerHTML = document.getElementById('dinner-menu-content').innerHTML;
-                menuModal.style.display = 'flex';
-            });
-
-            drinksMenuBtn.addEventListener('click', () => {
-                modalTitle.textContent = 'Drinks Menu';
-                modalBody.innerHTML = document.getElementById('drinks-menu-content').innerHTML;
-                menuModal.style.display = 'flex';
-            });
-
-            const closeModal = () => {
-                menuModal.style.display = 'none';
-            };
-
-            closeModalBtn.addEventListener('click', closeModal);
-            window.addEventListener('click', (event) => {
-                if (event.target == menuModal) {
-                    closeModal();
-                }
-            });
-
-            // --- RSVP Logic ---
+        // Function to set up the RSVP button listener
+        function setupRsvpListener() {
             const rsvpNameInput = document.getElementById('rsvpNameInput');
             const rsvpSubmitButton = document.getElementById('rsvpSubmitButton');
 
-            rsvpSubmitButton.addEventListener('click', async () => {
-                const name = rsvpNameInput.value.trim();
-                if (name === "") {
-                    showMessageBox("Please enter your name.");
-                    return;
-                }
-                
-                if (!db || !userId) {
-                    showMessageBox("The application is not ready yet. Please wait a moment and try again.");
-                    return;
-                }
+            if(rsvpSubmitButton) {
+                rsvpSubmitButton.addEventListener('click', async () => {
+                    const name = rsvpNameInput.value.trim();
+                    if (name === "") {
+                        showMessageBox("Please enter your name.");
+                        return;
+                    }
+                    
+                    if (!db || !userId) {
+                        showMessageBox("The application is not ready yet. Please wait a moment and try again.");
+                        return;
+                    }
 
-                if (name.toLowerCase() === 'admin') {
-                    isAdmin = !isAdmin;
-                    showMessageBox(isAdmin ? "Admin mode activated." : "Admin mode deactivated.");
-                    loadRsvps();
-                    rsvpNameInput.value = '';
-                    return;
-                }
+                    if (name.toLowerCase() === 'admin') {
+                        isAdmin = !isAdmin;
+                        showMessageBox(isAdmin ? "Admin mode activated." : "Admin mode deactivated.");
+                        loadRsvps();
+                        rsvpNameInput.value = '';
+                        return;
+                    }
 
-                try {
-                    await addDoc(collection(db, `artifacts/${firebaseConfig.appId}/public/data/rsvps`), {
-                        name: name,
-                        timestamp: new Date(),
-                    });
-                    rsvpNameInput.value = '';
-                    showMessageBox("Thank you for your RSVP!");
-                } catch (e) {
-                    console.error("Error adding document to Firestore: ", e);
-                    showMessageBox("Failed to add your RSVP. Please check your internet connection and try again.");
-                }
-            });
-
-            // Function to delete an RSVP
-            async function deleteRsvp(docId) {
-                if (!isAdmin) {
-                    showMessageBox("You do not have permission to remove entries.");
-                    return;
-                }
-                try {
-                    await deleteDoc(doc(db, `artifacts/${firebaseConfig.appId}/public/data/rsvps`, docId));
-                    showMessageBox("RSVP removed successfully.");
-                } catch (e) {
-                    console.error("Error removing document: ", e);
-                    showMessageBox("Failed to remove RSVP. Please check your Firestore security rules.");
-                }
-            }
-
-            // Function to load all RSVPs from Firestore in real-time
-            function loadRsvps() {
-                if (!db) return;
-
-                const attendeesList = document.getElementById('attendeesList');
-                const rsvpLoading = document.getElementById('rsvpLoading');
-                const rsvpsCollectionRef = collection(db, `artifacts/${firebaseConfig.appId}/public/data/rsvps`);
-                const q = query(rsvpsCollectionRef, orderBy("timestamp", "asc"));
-
-                onSnapshot(q, (snapshot) => {
-                    attendeesList.innerHTML = '';
-                    if (snapshot.empty) {
-                        const emptyItem = document.createElement('li');
-                        emptyItem.className = 'text-gray-500 col-span-full';
-                        emptyItem.textContent = 'No attendees yet. Be the first!';
-                        attendeesList.appendChild(emptyItem);
-                    } else {
-                        snapshot.docs.forEach((docSnap, index) => {
-                            const rsvp = docSnap.data();
-                            const listItem = document.createElement('li');
-                            listItem.className = 'attendee-item';
-
-                            const nameSpan = document.createElement('span');
-                            nameSpan.textContent = `${index + 1}. ${rsvp.name}`; 
-                            listItem.appendChild(nameSpan);
-
-                            if (isAdmin) {
-                                const removeButton = document.createElement('button');
-                                removeButton.textContent = 'Remove';
-                                removeButton.className = 'remove-btn';
-                                removeButton.addEventListener('click', () => deleteRsvp(docSnap.id));
-                                listItem.appendChild(removeButton);
-                            }
-                            attendeesList.appendChild(listItem);
+                    try {
+                        await addDoc(collection(db, `artifacts/${firebaseConfig.appId}/public/data/rsvps`), {
+                            name: name,
+                            timestamp: new Date(),
                         });
-                    }
-                    if(rsvpLoading) {
-                        rsvpLoading.style.display = 'none';
-                    }
-                }, (error) => {
-                    console.error("Error fetching RSVPs from Firestore:", error);
-                    attendeesList.innerHTML = '<li class="text-red-500 col-span-full">Error loading attendees.</li>';
-                     if(rsvpLoading) {
-                        rsvpLoading.style.display = 'none';
+                        rsvpNameInput.value = '';
+                        showMessageBox("Thank you for your RSVP!");
+                    } catch (e) {
+                        console.error("Error adding document to Firestore: ", e);
+                        showMessageBox("Failed to add your RSVP. Please check your internet connection and try again.");
                     }
                 });
             }
-        };
+        }
+
+        // Function to delete an RSVP
+        async function deleteRsvp(docId) {
+            if (!isAdmin) {
+                showMessageBox("You do not have permission to remove entries.");
+                return;
+            }
+            try {
+                await deleteDoc(doc(db, `artifacts/${firebaseConfig.appId}/public/data/rsvps`, docId));
+                showMessageBox("RSVP removed successfully.");
+            } catch (e) {
+                console.error("Error removing document: ", e);
+                showMessageBox("Failed to remove RSVP. Please check your Firestore security rules.");
+            }
+        }
+
+        // Function to load all RSVPs from Firestore in real-time
+        function loadRsvps() {
+            if (!db) return;
+
+            const attendeesList = document.getElementById('attendeesList');
+            const rsvpLoading = document.getElementById('rsvpLoading');
+            const rsvpsCollectionRef = collection(db, `artifacts/${firebaseConfig.appId}/public/data/rsvps`);
+            const q = query(rsvpsCollectionRef, orderBy("timestamp", "asc"));
+
+            onSnapshot(q, (snapshot) => {
+                attendeesList.innerHTML = '';
+                if (snapshot.empty) {
+                    const emptyItem = document.createElement('li');
+                    emptyItem.className = 'text-gray-500 col-span-full';
+                    emptyItem.textContent = 'No attendees yet. Be the first!';
+                    attendeesList.appendChild(emptyItem);
+                } else {
+                    snapshot.docs.forEach((docSnap, index) => {
+                        const rsvp = docSnap.data();
+                        const listItem = document.createElement('li');
+                        listItem.className = 'attendee-item';
+
+                        const nameSpan = document.createElement('span');
+                        nameSpan.textContent = `${index + 1}. ${rsvp.name}`; 
+                        listItem.appendChild(nameSpan);
+
+                        if (isAdmin) {
+                            const removeButton = document.createElement('button');
+                            removeButton.textContent = 'Remove';
+                            removeButton.className = 'remove-btn';
+                            removeButton.addEventListener('click', () => deleteRsvp(docSnap.id));
+                            listItem.appendChild(removeButton);
+                        }
+                        attendeesList.appendChild(listItem);
+                    });
+                }
+                if(rsvpLoading) {
+                    rsvpLoading.style.display = 'none';
+                }
+            }, (error) => {
+                console.error("Error fetching RSVPs from Firestore:", error);
+                attendeesList.innerHTML = '<li class="text-red-500 col-span-full">Error loading attendees.</li>';
+                 if(rsvpLoading) {
+                    rsvpLoading.style.display = 'none';
+                }
+            });
+        }
     </script>
 </body>
 </html>
