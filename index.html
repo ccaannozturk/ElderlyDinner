@@ -122,14 +122,34 @@
             cursor: pointer;
             margin-left: 0.5rem;
             transition: background-color 0.2s ease;
+            flex-shrink: 0; /* Prevents button from shrinking */
         }
         .remove-btn:hover {
             background-color: #dc2626;
         }
+        /* New styles for the attendee grid */
+        #attendeesList {
+            display: grid;
+            /* Create 4 columns on medium screens and up, 2 on small screens */
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            list-style: none;
+            padding: 0;
+        }
+        @media (min-width: 768px) {
+            #attendeesList {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
         .attendee-item {
+            background-color: #f9fafb;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            word-break: break-word;
         }
     </style>
 </head>
@@ -169,8 +189,9 @@
                 </div>
                 <div id="rsvpList" class="mt-6 border-t border-gray-200 pt-4">
                     <h3 class="text-xl font-semibold text-gray-800 mb-3">Attendees:</h3>
-                    <ul id="attendeesList" class="list-disc list-inside space-y-2 text-gray-700">
-                        <li id="rsvpLoading" class="text-gray-500">Loading attendees...</li>
+                    <!-- The list is now a grid, styling is handled by CSS -->
+                    <ul id="attendeesList">
+                        <li id="rsvpLoading" class="text-gray-500 col-span-full">Loading attendees...</li>
                     </ul>
                 </div>
             </div>
@@ -221,12 +242,12 @@
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, onSnapshot, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Your web app's Firebase configuration - this is from your Firebase project.
+        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyA8aIPnf06TevhDZM0g0YVKz-pz9pwUbsQ",
             authDomain: "rsvp-8aeb4.firebaseapp.com",
             projectId: "rsvp-8aeb4",
-            storageBucket: "rsvp-8aeb4.firebasestorage.app", // Corrected this line
+            storageBucket: "rsvp-8aeb4.firebasestorage.app",
             messagingSenderId: "186833662480",
             appId: "1:186833662480:web:2465ce4c746a3e8cf4d095"
         };
@@ -261,12 +282,10 @@
                     if (user) {
                         userId = user.uid;
                         console.log("User authenticated with UID:", userId);
-                        loadRsvps(); // Now that we are authenticated, load the RSVPs
+                        loadRsvps();
                     } else {
-                        // If there's no user, try to sign in.
                         signInAnonymously(auth).catch(authError => {
                             console.error("Anonymous sign-in failed:", authError);
-                            // This is where the 'auth/configuration-not-found' error will be caught.
                              showMessageBox("Authentication failed. Please ensure Anonymous Sign-in is enabled in your Firebase project settings.");
                         });
                     }
@@ -303,22 +322,19 @@
                     return;
                 }
                 
-                // Check if the app is ready
                 if (!db || !userId) {
                     showMessageBox("The application is not ready yet. Please wait a moment and try again.");
                     return;
                 }
 
-                // Handle Admin mode activation
                 if (name.toLowerCase() === 'admin') {
-                    isAdmin = !isAdmin; // Toggle admin mode
+                    isAdmin = !isAdmin;
                     showMessageBox(isAdmin ? "Admin mode activated." : "Admin mode deactivated.");
-                    loadRsvps(); // Reload the list to show/hide remove buttons
-                    rsvpNameInput.value = ''; // Clear input
+                    loadRsvps();
+                    rsvpNameInput.value = '';
                     return;
                 }
 
-                // Add the new RSVP to Firestore
                 try {
                     await addDoc(collection(db, `artifacts/${firebaseConfig.appId}/public/data/rsvps`), {
                         name: name,
@@ -332,7 +348,7 @@
                 }
             });
 
-            // Function to delete an RSVP (only works if isAdmin is true)
+            // Function to delete an RSVP
             async function deleteRsvp(docId) {
                 if (!isAdmin) {
                     showMessageBox("You do not have permission to remove entries.");
@@ -349,26 +365,31 @@
 
             // Function to load all RSVPs from Firestore in real-time
             function loadRsvps() {
-                if (!db) return; // Don't run if Firestore isn't initialized
+                if (!db) return;
 
                 const attendeesList = document.getElementById('attendeesList');
                 const rsvpLoading = document.getElementById('rsvpLoading');
                 const rsvpsCollectionRef = collection(db, `artifacts/${firebaseConfig.appId}/public/data/rsvps`);
                 const q = query(rsvpsCollectionRef, orderBy("timestamp", "asc"));
 
-                // onSnapshot listens for real-time updates
                 onSnapshot(q, (snapshot) => {
-                    attendeesList.innerHTML = ''; // Clear the list before redrawing
+                    attendeesList.innerHTML = '';
                     if (snapshot.empty) {
-                        attendeesList.innerHTML = '<li class="text-gray-500">No attendees yet. Be the first!</li>';
+                        const emptyItem = document.createElement('li');
+                        emptyItem.className = 'text-gray-500 col-span-full'; // Span across all columns
+                        emptyItem.textContent = 'No attendees yet. Be the first!';
+                        attendeesList.appendChild(emptyItem);
                     } else {
+                        let count = 1; // Initialize counter
                         snapshot.forEach((docSnap) => {
                             const rsvp = docSnap.data();
                             const listItem = document.createElement('li');
                             listItem.className = 'attendee-item';
-                            listItem.textContent = rsvp.name;
 
-                            // If in admin mode, add a remove button to each item
+                            const nameSpan = document.createElement('span');
+                            nameSpan.textContent = `${count}. ${rsvp.name}`; // Add number to name
+                            listItem.appendChild(nameSpan);
+
                             if (isAdmin) {
                                 const removeButton = document.createElement('button');
                                 removeButton.textContent = 'Remove';
@@ -377,13 +398,18 @@
                                 listItem.appendChild(removeButton);
                             }
                             attendeesList.appendChild(listItem);
+                            count++; // Increment counter
                         });
                     }
-                    rsvpLoading.style.display = 'none'; // Hide the "Loading..." text
+                    if(rsvpLoading) {
+                        rsvpLoading.style.display = 'none';
+                    }
                 }, (error) => {
                     console.error("Error fetching RSVPs from Firestore:", error);
-                    attendeesList.innerHTML = '<li class="text-red-500">Error loading attendees.</li>';
-                    rsvpLoading.style.display = 'none';
+                    attendeesList.innerHTML = '<li class="text-red-500 col-span-full">Error loading attendees.</li>';
+                     if(rsvpLoading) {
+                        rsvpLoading.style.display = 'none';
+                    }
                 });
             }
         });
