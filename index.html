@@ -380,14 +380,15 @@
                         emptyItem.textContent = 'No attendees yet. Be the first!';
                         attendeesList.appendChild(emptyItem);
                     } else {
-                        let count = 1; // Initialize counter
-                        snapshot.forEach((docSnap) => {
+                        // Use the index from the snapshot docs array for numbering
+                        snapshot.docs.forEach((docSnap, index) => {
                             const rsvp = docSnap.data();
                             const listItem = document.createElement('li');
                             listItem.className = 'attendee-item';
 
                             const nameSpan = document.createElement('span');
-                            nameSpan.textContent = `${count}. ${rsvp.name}`; // Add number to name
+                            // Use index + 1 for a 1-based count
+                            nameSpan.textContent = `${index + 1}. ${rsvp.name}`; 
                             listItem.appendChild(nameSpan);
 
                             if (isAdmin) {
@@ -398,7 +399,6 @@
                                 listItem.appendChild(removeButton);
                             }
                             attendeesList.appendChild(listItem);
-                            count++; // Increment counter
                         });
                     }
                     if(rsvpLoading) {
