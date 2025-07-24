@@ -1,167 +1,403 @@
-<script type="module">
-    // Firebase imports
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, query, onSnapshot, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elderly Food & Drinks Event at Louie Louie</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .section-title {
+            border-bottom: 2px solid #FFD700;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 0.75rem 0;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        .menu-item-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .menu-item-price {
+            font-weight: 700;
+            color: #00008B;
+        }
+        .map-container {
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+        iframe {
+            width: 100%;
+            height: 450px;
+            border: 0;
+        }
+        .tab-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            background-color: #e0e0e0;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .tab-button {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            background-color: transparent;
+            color: #555;
+            border: none;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            border-radius: 0.5rem;
+        }
+        .tab-button.active {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .message-box {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fefefe;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1000;
+            text-align: center;
+            max-width: 300px;
+        }
+        .message-box-close {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .remove-btn {
+            background-color: #ef4444;
+            color: white;
+            padding: 0.25rem 0.6rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin-left: 0.5rem;
+            transition: background-color 0.2s ease;
+        }
+        .remove-btn:hover {
+            background-color: #dc2626;
+        }
+        .attendee-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container">
+        <!-- Header Section -->
+        <header class="py-8 bg-white rounded-xl shadow-md mb-8">
+            <div class="text-center px-4">
+                <h1 class="text-4xl font-extrabold text-1a1a1a mb-2">Elderly Food & Drinks!</h1>
+                <p class="text-xl text-gray-600">Join us for a wonderful evening!</p>
+            </div>
+        </header>
 
-    // Your Firebase configuration object
-    const firebaseConfig = {
-        apiKey: "AIzaSyA8aIPnf06TevhDZM0g0YVKz-pz9pwUbsQ",
-        authDomain: "rsvp-8aeb4.firebaseapp.com",
-        projectId: "rsvp-8aeb4",
-        storageBucket: "rsvp-8aeb4.firebasestorage.app",
-        messagingSenderId: "186833662480",
-        appId: "1:186833662480:web:2465ce4c746a3e8cf4d095"
-    };
+        <!-- Event Details Section -->
+        <section class="card">
+            <h2 class="text-2xl font-bold text-1a1a1a section-title">Event Details</h2>
+            <div class="space-y-2">
+                <p class="text-lg"><strong class="text-gray-700">Date:</strong> Saturday, July 26th, 2025</p>
+                <p class="text-lg"><strong class="text-gray-700">Time:</strong> 17:00 (5:00 PM)</p>
+                <p class="text-lg"><strong class="text-gray-700">Location:</strong> Louie Louie</p>
+                <p class="text-lg">
+                    <strong class="text-gray-700">Website:</strong>
+                    <a href="https://www.louielouie.nl/" target="_blank" class="text-blue-500 hover:underline">www.louielouie.nl</a>
+                </p>
+            </div>
+        </section>
 
-    let app, db, auth, userId;
-    let isAdmin = false; // Flag to track admin status
+        <!-- RSVP Section -->
+        <section class="card">
+            <h2 class="text-2xl font-bold text-1a1a1a section-title">RSVP for the Event</h2>
+            <div class="space-y-4">
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <input type="text" id="rsvpNameInput" placeholder="Your Name" class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                    <button id="rsvpSubmitButton" class="bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors duration-300 shadow-md">
+                        Add My Name
+                    </button>
+                </div>
+                <div id="rsvpList" class="mt-6 border-t border-gray-200 pt-4">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Attendees:</h3>
+                    <ul id="attendeesList" class="list-disc list-inside space-y-2 text-gray-700">
+                        <li id="rsvpLoading" class="text-gray-500">Loading attendees...</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
 
-    // Function to show a custom message box
-    function showMessageBox(message) {
-        const messageBox = document.getElementById('messageBox');
-        const messageBoxContent = document.getElementById('messageBoxContent');
-        messageBoxContent.textContent = message;
-        messageBox.style.display = 'block';
-    }
+        <!-- Menu Section with Tabs -->
+        <section class="card">
+            <h2 class="text-2xl font-bold text-1a1a1a section-title">Menu Details</h2>
+            <div class="tab-buttons" role="tablist">
+                <button class="tab-button active" data-tab="dinner-menu" role="tab" aria-selected="true" aria-controls="dinner-menu-content">Dinner Menu</button>
+                <button class="tab-button" data-tab="drinks-menu" role="tab" aria-selected="false" aria-controls="drinks-menu-content">Drinks Menu</button>
+            </div>
 
-    // Close message box
-    document.getElementById('messageBoxClose').addEventListener('click', () => {
-        document.getElementById('messageBox').style.display = 'none';
-    });
+            <!-- Dinner Menu Content -->
+            <div id="dinner-menu-content" class="tab-content active" role="tabpanel">
+                <!-- Dinner menu content from your original file goes here -->
+            </div>
 
-    document.addEventListener('DOMContentLoaded', async () => {
-        // Initialize Firebase
-        try {
-            app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
+            <!-- Drinks Menu Content -->
+            <div id="drinks-menu-content" class="tab-content" role="tabpanel" hidden>
+                 <!-- Drinks menu content from your original file goes here -->
+            </div>
+        </section>
 
-            // Authenticate user anonymously
-            await signInAnonymously(auth);
+        <!-- Location Section -->
+        <section class="card">
+            <h2 class="text-2xl font-bold text-1a1a1a section-title">Event Location</h2>
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2436.4061371382395!2d4.921305376724468!3d52.36305534783732!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c60974fe2536eb%3A0x554d0ab3561e677e!2sLouie%20Louie!5e0!3m2!1sen!2snl!4v1753352169336!5m2!1sen!2snl" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </section>
 
-            // Set user ID after authentication
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    userId = user.uid;
-                    console.log("User authenticated:", userId);
-                    loadRsvps(); // Load RSVPs once authenticated
-                } else {
-                    console.log("No user is signed in.");
-                }
-            });
+        <!-- Footer Section -->
+        <footer class="text-center py-6 text-gray-500 text-sm">
+            <p>&copy; 2025 Elderly Food & Drinks. All rights reserved.</p>
+        </footer>
+    </div>
 
-        } catch (error) {
-            console.error("Error initializing Firebase:", error);
-            showMessageBox("Failed to initialize the app. Please try again later.");
+    <!-- Message Box HTML -->
+    <div id="messageBox" class="message-box">
+        <div class="message-box-content" id="messageBoxContent"></div>
+        <button id="messageBoxClose" class="message-box-close">OK</button>
+    </div>
+
+    <script type="module">
+        // Firebase imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, onSnapshot, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Your web app's Firebase configuration - this is from your Firebase project.
+        const firebaseConfig = {
+            apiKey: "AIzaSyA8aIPnf06TevhDZM0g0YVKz-pz9pwUbsQ",
+            authDomain: "rsvp-8aeb4.firebaseapp.com",
+            projectId: "rsvp-8aeb4",
+            storageBucket: "rsvp-8aeb4.firebasestorage.app",
+            messagingSenderId: "186833662480",
+            appId: "1:186833662480:web:2465ce4c746a3e8cf4d095"
+        };
+
+        // Global variables for Firebase and app state
+        let app, db, auth, userId;
+        let isAdmin = false;
+
+        // Function to show a custom message box
+        function showMessageBox(message) {
+            const messageBox = document.getElementById('messageBox');
+            const messageBoxContent = document.getElementById('messageBoxContent');
+            messageBoxContent.textContent = message;
+            messageBox.style.display = 'block';
         }
 
-        // Tab switching logic
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                tabContents.forEach(content => content.classList.remove('active'));
-                button.classList.add('active');
-                const targetContent = document.getElementById(`${button.dataset.tab}-content`);
-                if (targetContent) {
-                    targetContent.classList.add('active');
-                }
-            });
+        // Add event listener to close the message box
+        document.getElementById('messageBoxClose').addEventListener('click', () => {
+            document.getElementById('messageBox').style.display = 'none';
         });
 
-        // RSVP Logic
-        const rsvpNameInput = document.getElementById('rsvpNameInput');
-        const rsvpSubmitButton = document.getElementById('rsvpSubmitButton');
-        const attendeesList = document.getElementById('attendeesList');
-        const rsvpLoading = document.getElementById('rsvpLoading');
-
-        // Function to add an RSVP
-        rsvpSubmitButton.addEventListener('click', async () => {
-            const name = rsvpNameInput.value.trim();
-            if (name === "") {
-                showMessageBox("Please enter your name to RSVP.");
-                return;
-            }
-
-            if (!db || !userId) {
-                showMessageBox("App not ready. Please wait or refresh.");
-                return;
-            }
-
-            // Activate admin mode without adding "admin" to the list
-            if (name.toLowerCase() === 'admin') {
-                isAdmin = true;
-                showMessageBox("Admin mode activated. You can now see remove buttons.");
-                loadRsvps(); // Reload the list to show buttons
-                rsvpNameInput.value = ''; // Clear input
-                return; 
-            }
-
+        // Main function that runs after the page is loaded
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize Firebase
             try {
-                await addDoc(collection(db, `artifacts/${firebaseConfig.appId}/public/data/rsvps`), {
-                    name: name,
-                    timestamp: new Date(),
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                
+                // =================================================================
+                // IMPORTANT FIX FOR 'auth/configuration-not-found' ERROR
+                // For this to work, you MUST enable "Anonymous" sign-in
+                // in your Firebase project's Authentication settings.
+                //
+                // STEPS:
+                // 1. Go to the Firebase Console (https://console.firebase.google.com/)
+                // 2. Select your project (rsvp-8aeb4)
+                // 3. Go to "Build" > "Authentication" in the left-hand menu.
+                // 4. Click the "Sign-in method" tab.
+                // 5. Click "Add new provider" and select "Anonymous" from the list.
+                // 6. Click the "Enable" toggle and save.
+                // =================================================================
+                await signInAnonymously(auth);
+
+                // Listen for authentication state changes
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        console.log("User authenticated with UID:", userId);
+                        // Now that we are authenticated, we can load the RSVPs
+                        loadRsvps();
+                    } else {
+                        console.error("Authentication failed. Cannot load RSVPs.");
+                        showMessageBox("Could not connect to the RSVP service. Please refresh the page.");
+                    }
                 });
-                rsvpNameInput.value = '';
-                showMessageBox("Thank you for your RSVP!");
-            } catch (e) {
-                console.error("Error adding document: ", e);
-                showMessageBox("Failed to add your RSVP. Please try again.");
+            } catch (error) {
+                console.error("Fatal Error: Could not initialize Firebase.", error);
+                showMessageBox("Failed to initialize the app. Please check your Firebase configuration and internet connection.");
+            }
+
+            // --- UI and Event Listeners ---
+
+            // Tab switching logic
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    button.classList.add('active');
+                    const targetContent = document.getElementById(`${button.dataset.tab}-content`);
+                    if (targetContent) targetContent.classList.add('active');
+                });
+            });
+
+            // RSVP submission logic
+            const rsvpNameInput = document.getElementById('rsvpNameInput');
+            const rsvpSubmitButton = document.getElementById('rsvpSubmitButton');
+
+            rsvpSubmitButton.addEventListener('click', async () => {
+                const name = rsvpNameInput.value.trim();
+                if (name === "") {
+                    showMessageBox("Please enter your name.");
+                    return;
+                }
+                
+                // Check if the app is ready
+                if (!db || !userId) {
+                    showMessageBox("The application is not ready yet. Please wait a moment and try again.");
+                    return;
+                }
+
+                // Handle Admin mode activation
+                if (name.toLowerCase() === 'admin') {
+                    isAdmin = !isAdmin; // Toggle admin mode
+                    showMessageBox(isAdmin ? "Admin mode activated." : "Admin mode deactivated.");
+                    loadRsvps(); // Reload the list to show/hide remove buttons
+                    rsvpNameInput.value = ''; // Clear input
+                    return;
+                }
+
+                // Add the new RSVP to Firestore
+                try {
+                    await addDoc(collection(db, `artifacts/${firebaseConfig.appId}/public/data/rsvps`), {
+                        name: name,
+                        timestamp: new Date(),
+                    });
+                    rsvpNameInput.value = '';
+                    showMessageBox("Thank you for your RSVP!");
+                } catch (e) {
+                    console.error("Error adding document to Firestore: ", e);
+                    showMessageBox("Failed to add your RSVP. Please check your internet connection and try again.");
+                }
+            });
+
+            // Function to delete an RSVP (only works if isAdmin is true)
+            async function deleteRsvp(docId) {
+                if (!isAdmin) {
+                    showMessageBox("You do not have permission to remove entries.");
+                    return;
+                }
+                try {
+                    await deleteDoc(doc(db, `artifacts/${firebaseConfig.appId}/public/data/rsvps`, docId));
+                    showMessageBox("RSVP removed successfully.");
+                } catch (e) {
+                    console.error("Error removing document: ", e);
+                    showMessageBox("Failed to remove RSVP. Please check your Firestore security rules.");
+                }
+            }
+
+            // Function to load all RSVPs from Firestore in real-time
+            function loadRsvps() {
+                if (!db) return; // Don't run if Firestore isn't initialized
+
+                const attendeesList = document.getElementById('attendeesList');
+                const rsvpLoading = document.getElementById('rsvpLoading');
+                const rsvpsCollectionRef = collection(db, `artifacts/${firebaseConfig.appId}/public/data/rsvps`);
+                const q = query(rsvpsCollectionRef, orderBy("timestamp", "asc"));
+
+                // onSnapshot listens for real-time updates
+                onSnapshot(q, (snapshot) => {
+                    attendeesList.innerHTML = ''; // Clear the list before redrawing
+                    if (snapshot.empty) {
+                        attendeesList.innerHTML = '<li class="text-gray-500">No attendees yet. Be the first!</li>';
+                    } else {
+                        snapshot.forEach((docSnap) => {
+                            const rsvp = docSnap.data();
+                            const listItem = document.createElement('li');
+                            listItem.className = 'attendee-item';
+                            listItem.textContent = rsvp.name;
+
+                            // If in admin mode, add a remove button to each item
+                            if (isAdmin) {
+                                const removeButton = document.createElement('button');
+                                removeButton.textContent = 'Remove';
+                                removeButton.className = 'remove-btn';
+                                removeButton.addEventListener('click', () => deleteRsvp(docSnap.id));
+                                listItem.appendChild(removeButton);
+                            }
+                            attendeesList.appendChild(listItem);
+                        });
+                    }
+                    rsvpLoading.style.display = 'none'; // Hide the "Loading..." text
+                }, (error) => {
+                    console.error("Error fetching RSVPs from Firestore:", error);
+                    attendeesList.innerHTML = '<li class="text-red-500">Error loading attendees.</li>';
+                    rsvpLoading.style.display = 'none';
+                });
             }
         });
-
-        // Function to delete an RSVP
-        async function deleteRsvp(docId) {
-            if (!db || !isAdmin) {
-                showMessageBox("You do not have permission to remove RSVPs.");
-                return;
-            }
-            try {
-                await deleteDoc(doc(db, `artifacts/${firebaseConfig.appId}/public/data/rsvps`, docId));
-                showMessageBox("RSVP removed successfully.");
-            } catch (e) {
-                console.error("Error removing document: ", e);
-                showMessageBox("Failed to remove RSVP. Check console for details.");
-            }
-        }
-
-        // Function to load RSVPs in real-time
-        function loadRsvps() {
-            if (!db) return;
-
-            const rsvpsCollectionRef = collection(db, `artifacts/${firebaseConfig.appId}/public/data/rsvps`);
-            const q = query(rsvpsCollectionRef, orderBy("timestamp", "asc"));
-
-            onSnapshot(q, (snapshot) => {
-                attendeesList.innerHTML = '';
-                if (snapshot.empty) {
-                    attendeesList.innerHTML = '<li class="text-gray-500">No attendees yet. Be the first to RSVP!</li>';
-                } else {
-                    snapshot.forEach((doc) => {
-                        const rsvp = doc.data();
-                        const listItem = document.createElement('li');
-                        listItem.className = 'attendee-item';
-                        listItem.textContent = rsvp.name;
-
-                        if (isAdmin) {
-                            const removeButton = document.createElement('button');
-                            removeButton.textContent = 'Remove';
-                            removeButton.className = 'remove-btn';
-                            removeButton.addEventListener('click', () => deleteRsvp(doc.id));
-                            listItem.appendChild(removeButton);
-                        }
-                        attendeesList.appendChild(listItem);
-                    });
-                }
-                rsvpLoading.style.display = 'none';
-            }, (error) => {
-                console.error("Error fetching RSVPs:", error);
-                attendeesList.innerHTML = '<li class="text-red-500">Failed to load attendees.</li>';
-                rsvpLoading.style.display = 'none';
-            });
-        }
-    });
-</script>
+    </script>
+</body>
+</html>
