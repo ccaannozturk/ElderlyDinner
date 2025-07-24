@@ -15,7 +15,12 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1rem; /* Reduced padding for mobile */
+        }
+        @media (min-width: 768px) {
+            .container {
+                padding: 2rem; /* Original padding for larger screens */
+            }
         }
         .section-title {
             border-bottom: 2px solid #FFD700;
@@ -56,17 +61,28 @@
         .map-container {
             border-radius: 0.75rem;
             overflow: hidden;
+            height: 300px; /* Adjusted height for mobile */
+        }
+         @media (min-width: 768px) {
+            .map-container {
+                height: 450px;
+            }
         }
         iframe {
             width: 100%;
-            height: 450px;
+            height: 100%;
             border: 0;
         }
         .menu-buttons {
             display: flex;
-            justify-content: center;
+            flex-direction: column; /* Stack buttons on mobile */
             gap: 1rem;
             margin-bottom: 1.5rem;
+        }
+        @media (min-width: 640px) {
+            .menu-buttons {
+                flex-direction: row; /* Side-by-side on larger screens */
+            }
         }
         .menu-button {
             flex: 1;
@@ -98,6 +114,7 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             z-index: 1000;
             text-align: center;
+            width: 90%;
             max-width: 300px;
         }
         .message-box-close {
@@ -125,14 +142,19 @@
         }
         #attendeesList {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(1, 1fr); /* Single column on mobile */
             gap: 1rem;
             list-style: none;
             padding: 0;
         }
-        @media (min-width: 768px) {
+        @media (min-width: 640px) {
             #attendeesList {
-                grid-template-columns: repeat(4, 1fr);
+                grid-template-columns: repeat(2, 1fr); /* Two columns on tablets */
+            }
+        }
+        @media (min-width: 1024px) {
+            #attendeesList {
+                grid-template-columns: repeat(4, 1fr); /* Four columns on desktop */
             }
         }
         .attendee-item {
@@ -162,14 +184,19 @@
         .modal-content {
             background-color: #fefefe;
             margin: auto;
-            padding: 2rem;
+            padding: 1.5rem; /* Reduced padding for mobile modal */
             border: 1px solid #888;
             border-radius: 0.75rem;
-            width: 90%;
+            width: 95%;
             max-width: 800px;
             max-height: 90vh;
             overflow-y: auto;
             position: relative;
+        }
+         @media (min-width: 768px) {
+            .modal-content {
+                 padding: 2rem;
+            }
         }
         .close-button {
             color: #aaa;
@@ -185,6 +212,14 @@
             color: black;
             text-decoration: none;
         }
+        .header-title {
+            font-size: 2.25rem; /* text-4xl */
+        }
+        @media (max-width: 640px) {
+            .header-title {
+                font-size: 1.875rem; /* text-3xl on mobile */
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -192,7 +227,7 @@
         <!-- Header Section -->
         <header class="py-8 bg-white rounded-xl shadow-md mb-8">
             <div class="text-center px-4">
-                <h1 class="text-4xl font-extrabold text-1a1a1a mb-2">Elderly Food & Drinks!</h1>
+                <h1 class="header-title font-extrabold text-1a1a1a mb-2">Elderly Food & Drinks!</h1>
                 <p class="text-xl text-gray-600">Join us for a wonderful evening!</p>
             </div>
         </header>
