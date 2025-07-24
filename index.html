@@ -43,9 +43,15 @@
             font-weight: 600;
             color: #2c3e50;
         }
+        .menu-item-description {
+            font-size: 0.875rem;
+            color: #666;
+            padding-right: 1rem;
+        }
         .menu-item-price {
             font-weight: 700;
             color: #00008B;
+            white-space: nowrap;
         }
         .map-container {
             border-radius: 0.75rem;
@@ -268,37 +274,37 @@
             <div>
                 <h3 class="text-xl font-semibold text-gray-800 mb-3">Starters</h3>
                 <div class="space-y-2">
-                    <div class="menu-item"><p class="menu-item-name">DAIKON ROLL (3 PIECES)</p><p class="menu-item-price">€13.50</p></div>
-                    <div class="menu-item"><p class="menu-item-name">SPICY TUNA SASHIMI (2 PIECES)</p><p class="menu-item-price">€17.00</p></div>
-                    <div class="menu-item"><p class="menu-item-name">BAJA CEVICHE (2 PIECES)</p><p class="menu-item-price">€12.50</p></div>
-                    <div class="menu-item"><p class="menu-item-name">MISO CORVINA (2 PIECES)</p><p class="menu-item-price">€17.00</p></div>
-                    <div class="menu-item"><p class="menu-item-name">TACOS DE CARNITAS (2 PIECES)</p><p class="menu-item-price">€14.50</p></div>
-                    <div class="menu-item"><p class="menu-item-name">BAO WITH CRISPY OYSTER MUSHROOM (2 PIECES)</p><p class="menu-item-price">€12.50</p></div>
-                    <div class="menu-item"><p class="menu-item-name">BAO WITH PORK BELLY (2 PIECES)</p><p class="menu-item-price">€14.50</p></div>
-                    <div class="menu-item"><p class="menu-item-name">MINCED DUCK</p><p class="menu-item-price">€13.00</p></div>
-                    <div class="menu-item"><p class="menu-item-name">TORI KARAAGE (6 PIECES)</p><p class="menu-item-price">€12.00</p></div>
-                    <div class="menu-item"><p class="menu-item-name">GRILLED POINTED CABBAGE</p><p class="menu-item-price">€14.00</p></div>
-                    <div class="menu-item"><p class="menu-item-name">GRILLED EGGPLANT</p><p class="menu-item-price">€14.00</p></div>
-                    <div class="menu-item"><p class="menu-item-name">BEEF TATAKI</p><p class="menu-item-price">€15.00</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">DAIKON ROLL (3 PIECES)</p><p class="menu-item-description">with marinated radish, avocado, enoki & soy-ginger dressing</p></div><p class="menu-item-price">€13.50</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">SPICY TUNA SASHIMI (2 PIECES)</p><p class="menu-item-description">on tostada with pika di papaya, oshinko & crema verde</p></div><p class="menu-item-price">€17.00</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">BAJA CEVICHE (2 PIECES)</p><p class="menu-item-description">on tostada with salsa criolla & crema verde</p></div><p class="menu-item-price">€12.50</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">MISO CORVINA (2 PIECES)</p><p class="menu-item-description">from the BBQ on soft tacos with mango, pepper & pickles</p></div><p class="menu-item-price">€17.00</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">TACOS DE CARNITAS (2 PIECES)</p><p class="menu-item-description">with refried pulled pork, salsa roja & sweet-sour cucumber</p></div><p class="menu-item-price">€14.50</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">BAO WITH CRISPY OYSTER MUSHROOM (2 PIECES)</p><p class="menu-item-description">fermented radish in "XO sauce" & sriracha</p></div><p class="menu-item-price">€12.50</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">BAO WITH PORK BELLY (2 PIECES)</p><p class="menu-item-description">fermented radish, jalapeño, spring onion & sriracha</p></div><p class="menu-item-price">€14.50</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">MINCED DUCK</p><p class="menu-item-description">on roti paratha pancake, spring onion, hoisin & pickles</p></div><p class="menu-item-price">€13.00</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">TORI KARAAGE (6 PIECES)</p><p class="menu-item-description">crispy chicken with kimchi mayo, furikake, Korean glaze & pickles</p></div><p class="menu-item-price">€12.00</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">GRILLED POINTED CABBAGE</p><p class="menu-item-description">on tofu-miso spread, katsuobushi flakes & gochujang butter</p></div><p class="menu-item-price">€14.00</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">GRILLED EGGPLANT</p><p class="menu-item-description">on baba ganoush with ponzu, chile morita salsa & coriander</p></div><p class="menu-item-price">€14.00</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">BEEF TATAKI</p><p class="menu-item-description">with ponzu, fried garlic, sesame seeds, radish, scallion salsa & plum. Approx. 90g</p></div><p class="menu-item-price">€15.00</p></div>
                 </div>
             </div>
             <div>
                 <h3 class="text-xl font-semibold text-gray-800 mb-3">Main Course</h3>
                 <div class="space-y-2">
-                     <div class="menu-item"><p class="menu-item-name">BEEF SHORT RIBS (500g)</p><p class="menu-item-price">€37.00</p></div>
+                     <div class="menu-item"><div><p class="menu-item-name">BEEF SHORT RIBS</p><p class="menu-item-description">from the BBQ, 500g on the bone with soy glaze, canchitas & papaya salad</p></div><p class="menu-item-price">€37.00</p></div>
                 </div>
                 <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">Sides</h3>
                 <div class="space-y-2">
-                    <div class="menu-item"><p class="menu-item-name">FRIES with mayonnaise</p><p class="menu-item-price">€5.00</p></div>
-                    <div class="menu-item"><p class="menu-item-name">NOODLE SALAD</p><p class="menu-item-price">€7.00</p></div>
-                    <div class="menu-item"><p class="menu-item-name">CHIMICHURRI FRIES</p><p class="menu-item-price">€9.00</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">FRIES</p><p class="menu-item-description">with mayonnaise</p></div><p class="menu-item-price">€5.00</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">NOODLE SALAD</p><p class="menu-item-description">with Thai peanut dressing, chili crunch, inari tofu, coriander & tomatillo</p></div><p class="menu-item-price">€7.00</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">CHIMICHURRI FRIES</p><p class="menu-item-description">with feta & roasted bell pepper dip</p></div><p class="menu-item-price">€9.00</p></div>
                 </div>
                 <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">Desserts</h3>
                 <div class="space-y-2">
-                    <div class="menu-item"><p class="menu-item-name">CHOCOLATE ICE CREAM MOCHI (2 PIECES)</p><p class="menu-item-price">€9.00</p></div>
-                    <div class="menu-item"><p class="menu-item-name">NY CHEESECAKE BRÛLÉE</p><p class="menu-item-price">€8.00</p></div>
-                    <div class="menu-item"><p class="menu-item-name">SPECIAL COFFEE</p><p class="menu-item-price">€8.50</p></div>
-                    <div class="menu-item"><p class="menu-item-name">ESPRESSO MARTINI</p><p class="menu-item-price">€14.00</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">CHOCOLATE ICE CREAM MOCHI (2 PIECES)</p><p class="menu-item-description">with fresh fruit</p></div><p class="menu-item-price">€9.00</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">NY CHEESECAKE BRÛLÉE</p></div><p class="menu-item-price">€8.00</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">SPECIAL COFFEE</p><p class="menu-item-description">Italian, French, Kiss of Fire, Irish</p></div><p class="menu-item-price">€8.50</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">ESPRESSO MARTINI</p><p class="menu-item-description">Ketel One vodka, Kahlua & espresso</p></div><p class="menu-item-price">€14.00</p></div>
                 </div>
             </div>
         </div>
@@ -306,37 +312,55 @@
     <div id="drinks-menu-content" hidden>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8">
             <div>
-                <h3 class="text-xl font-semibold text-gray-800 mb-3">Beer</h3>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Tap Beer</h3>
                 <div class="space-y-2">
-                    <div class="menu-item"><p class="menu-item-name">HEINEKEN PILS 5%</p><p class="menu-item-price">€3.75</p></div>
-                    <div class="menu-item"><p class="menu-item-name">IJWIT 6.5%</p><p class="menu-item-price">€5.95</p></div>
-                    <div class="menu-item"><p class="menu-item-name">BULLEBAK 7.7%</p><p class="menu-item-price">€6.50</p></div>
-                    <div class="menu-item"><p class="menu-item-name">VEDETT EXTRA WHITE 4.7%</p><p class="menu-item-price">€5.95</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">HEINEKEN PILS 5%</p></div><p class="menu-item-price">€3.75</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">IJWIT 6.5%</p><p class="menu-item-description">Unfiltered witbier from Brouwerij 't IJ</p></div><p class="menu-item-price">€5.95</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">BULLEBAK 7.7%</p><p class="menu-item-description">A sturdy Weizen Tripel</p></div><p class="menu-item-price">€6.50</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">GLADJANUS 5.2%</p><p class="menu-item-description">White IPA with notes of grapefruit & lychee</p></div><p class="menu-item-price">€5.95</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">MANNENLIEFDE 6.5%</p><p class="menu-item-description">Saison from Oedipus. Fresh & peppery</p></div><p class="menu-item-price">€6.50</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">FUNKY FALCON 5.2%</p><p class="menu-item-description">Pale Ale with lemongrass</p></div><p class="menu-item-price">€5.95</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">LA CHOUFFE 8%</p><p class="menu-item-description">Spicy & strong Belgian blond</p></div><p class="menu-item-price">€5.95</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">PAULANER HEFE-WEISSBIER 5.5%</p><p class="menu-item-description">German witbier with citrus</p></div><p class="menu-item-price">€5.95</p></div>
                 </div>
-                 <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">No & Low</h3>
-                <div class="space-y-2">
-                    <div class="menu-item"><p class="menu-item-name">HEINEKEN 0.0</p><p class="menu-item-price">€4.50</p></div>
-                    <div class="menu-item"><p class="menu-item-name">AFFLIGEM BLOND 0.0</p><p class="menu-item-price">€5.50</p></div>
-                    <div class="menu-item"><p class="menu-item-name">VRIJWIT 0.5%</p><p class="menu-item-price">€5.50</p></div>
-                </div>
-            </div>
-            <div>
-                <h3 class="text-xl font-semibold text-gray-800 mb-3">Soda & Cocktails</h3>
-                <div class="space-y-2">
-                    <div class="menu-item"><p class="menu-item-name">COCA COLA | COLA ZERO</p><p class="menu-item-price">€3.75</p></div>
-                    <div class="menu-item"><p class="menu-item-name">LIPTON ICE TEA</p><p class="menu-item-price">€3.75</p></div>
-                    <div class="menu-item"><p class="menu-item-name">FROZEN MARGARITA</p><p class="menu-item-price">€12.95</p></div>
-                    <div class="menu-item"><p class="menu-item-name">CLASSIC MOJITO</p><p class="menu-item-price">€10.95</p></div>
-                    <div class="menu-item"><p class="menu-item-name">DARK & STORMY</p><p class="menu-item-price">€10.95</p></div>
-                    <div class="menu-item"><p class="menu-item-name">ESPRESSO MARTINI</p><p class="menu-item-price">€13.95</p></div>
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">Bottled Beer</h3>
+                 <div class="space-y-2">
+                    <div class="menu-item"><div><p class="menu-item-name">DUVEL 8.5%</p><p class="menu-item-description">Classic Belgian blond</p></div><p class="menu-item-price">€5.95</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">LIEFMANS FRUITESSE 4.2%</p><p class="menu-item-description">Fruity notes of strawberry, raspberry & blueberry</p></div><p class="menu-item-price">€5.95</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">APPLE BANDIT CIDER 4.5%</p></div><p class="menu-item-price">€5.95</p></div>
                 </div>
             </div>
             <div>
-                 <h3 class="text-xl font-semibold text-gray-800 mb-3">Pitchers (1.5L)</h3>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Cocktails</h3>
                 <div class="space-y-2">
-                    <div class="menu-item"><p class="menu-item-name">SANGRIA CLASICA</p><p class="menu-item-price">€29.50</p></div>
-                    <div class="menu-item"><p class="menu-item-name">MOSCOW MULE</p><p class="menu-item-price">€39.50</p></div>
-                    <div class="menu-item"><p class="menu-item-name">TANQUERAY & TONIC</p><p class="menu-item-price">€39.50</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">FROZEN MARGARITA</p><p class="menu-item-description">Don Julio Blanco, triple sec, lime & lemon</p></div><p class="menu-item-price">€12.95</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">CLASSIC MOJITO</p><p class="menu-item-description">Pampero Blanco & soda</p></div><p class="menu-item-price">€10.95</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">PASSIONFRUIT MOJITO</p></div><p class="menu-item-price">€10.95</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">DARK & STORMY</p><p class="menu-item-description">Pampero Especial, ginger beer, lime & angostura</p></div><p class="menu-item-price">€10.95</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">DON JULIO PALOMA</p><p class="menu-item-description">Don Julio & pink grapefruit soda</p></div><p class="menu-item-price">€12.95</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">MOSCOW MULE</p><p class="menu-item-description">Ketel One vodka, ginger beer, lime & angostura</p></div><p class="menu-item-price">€10.95</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">NEGRONI</p><p class="menu-item-description">Campari, red vermouth, Tanqueray Ten gin</p></div><p class="menu-item-price">€11.95</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">ESPRESSO MARTINI</p><p class="menu-item-description">Ketel One vodka, Kahlua & espresso</p></div><p class="menu-item-price">€13.95</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">PORNSTAR MARTINI</p><p class="menu-item-description">Ketel One vodka, passionfruit, vanilla & Cava</p></div><p class="menu-item-price">€13.95</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">APEROL SPRITZ</p><p class="menu-item-description">Aperol, Cava, soda & orange</p></div><p class="menu-item-price">€10.95</p></div>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">No & Low Alcohol</h3>
+                <div class="space-y-2">
+                    <div class="menu-item"><div><p class="menu-item-name">RADLER 2%</p></div><p class="menu-item-price">€4.70</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">HEINEKEN 0.0%</p></div><p class="menu-item-price">€4.50</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">AFFLIGEM BLOND 0.0%</p></div><p class="menu-item-price">€5.50</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">FREE IPA 0.5%</p></div><p class="menu-item-price">€5.50</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">VRIJWIT 0.5%</p></div><p class="menu-item-price">€5.50</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">TANQUERAY 0.0% & TONIC</p></div><p class="menu-item-price">€9.95</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">VIRGIN MOJITO</p></div><p class="menu-item-price">€6.95</p></div>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">Soda</h3>
+                <div class="space-y-2">
+                    <div class="menu-item"><div><p class="menu-item-name">COCA COLA | COLA ZERO</p></div><p class="menu-item-price">€3.75</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">LIPTON ICE TEA</p></div><p class="menu-item-price">€3.75</p></div>
+                    <div class="menu-item"><div><p class="menu-item-name">FEVER-TREE (TONIC, GINGER ALE, GINGER BEER)</p></div><p class="menu-item-price">€4.75</p></div>
                 </div>
             </div>
         </div>
@@ -377,7 +401,6 @@
 
         // This function sets up listeners that don't depend on Firebase
         function setupStaticListeners() {
-            console.log("Setting up menu listeners...");
             const menuModal = document.getElementById('menuModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalBody = document.getElementById('modalBody');
@@ -391,8 +414,6 @@
                     modalBody.innerHTML = document.getElementById('dinner-menu-content').innerHTML;
                     menuModal.style.display = 'flex';
                 });
-            } else {
-                 console.error("Dinner menu button not found!");
             }
 
             if (drinksMenuBtn) {
@@ -401,8 +422,6 @@
                     modalBody.innerHTML = document.getElementById('drinks-menu-content').innerHTML;
                     menuModal.style.display = 'flex';
                 });
-            } else {
-                console.error("Drinks menu button not found!");
             }
 
             const closeModal = () => {
