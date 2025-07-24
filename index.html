@@ -56,38 +56,28 @@
             height: 450px;
             border: 0;
         }
-        .tab-buttons {
+        .menu-buttons {
             display: flex;
             justify-content: center;
+            gap: 1rem;
             margin-bottom: 1.5rem;
-            background-color: #e0e0e0;
-            border-radius: 0.5rem;
-            overflow: hidden;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
         }
-        .tab-button {
+        .menu-button {
             flex: 1;
             padding: 1rem 1.5rem;
             font-size: 1.125rem;
             font-weight: 600;
             text-align: center;
             cursor: pointer;
-            background-color: transparent;
-            color: #555;
-            border: none;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            border-radius: 0.5rem;
-        }
-        .tab-button.active {
             background-color: #1a1a1a;
             color: #ffffff;
+            border: none;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
+         .menu-button:hover {
+            background-color: #333;
         }
         .message-box {
             display: none;
@@ -127,10 +117,8 @@
         .remove-btn:hover {
             background-color: #dc2626;
         }
-        /* New styles for the attendee grid */
         #attendeesList {
             display: grid;
-            /* Create 4 columns on medium screens and up, 2 on small screens */
             grid-template-columns: repeat(2, 1fr);
             gap: 1rem;
             list-style: none;
@@ -150,6 +138,46 @@
             justify-content: space-between;
             align-items: center;
             word-break: break-word;
+        }
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 2rem;
+            border: 1px solid #888;
+            border-radius: 0.75rem;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -189,7 +217,6 @@
                 </div>
                 <div id="rsvpList" class="mt-6 border-t border-gray-200 pt-4">
                     <h3 class="text-xl font-semibold text-gray-800 mb-3">Attendees:</h3>
-                    <!-- The list is now a grid, styling is handled by CSS -->
                     <ul id="attendeesList">
                         <li id="rsvpLoading" class="text-gray-500 col-span-full">Loading attendees...</li>
                     </ul>
@@ -197,22 +224,12 @@
             </div>
         </section>
 
-        <!-- Menu Section with Tabs -->
+        <!-- Menu Section -->
         <section class="card">
             <h2 class="text-2xl font-bold text-1a1a1a section-title">Menu Details</h2>
-            <div class="tab-buttons" role="tablist">
-                <button class="tab-button active" data-tab="dinner-menu" role="tab" aria-selected="true" aria-controls="dinner-menu-content">Dinner Menu</button>
-                <button class="tab-button" data-tab="drinks-menu" role="tab" aria-selected="false" aria-controls="drinks-menu-content">Drinks Menu</button>
-            </div>
-
-            <!-- Dinner Menu Content -->
-            <div id="dinner-menu-content" class="tab-content active" role="tabpanel">
-                <!-- Dinner menu content from your original file goes here -->
-            </div>
-
-            <!-- Drinks Menu Content -->
-            <div id="drinks-menu-content" class="tab-content" role="tabpanel" hidden>
-                 <!-- Drinks menu content from your original file goes here -->
+            <div class="menu-buttons">
+                <button id="dinnerMenuBtn" class="menu-button">Dinner Menu</button>
+                <button id="drinksMenuBtn" class="menu-button">Drinks Menu</button>
             </div>
         </section>
 
@@ -234,6 +251,95 @@
     <div id="messageBox" class="message-box">
         <div class="message-box-content" id="messageBoxContent"></div>
         <button id="messageBoxClose" class="message-box-close">OK</button>
+    </div>
+
+    <!-- Menu Modal -->
+    <div id="menuModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modalTitle" class="text-3xl font-bold mb-4"></h2>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Hidden Menu Content -->
+    <div id="dinner-menu-content" hidden>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+            <div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Starters</h3>
+                <div class="space-y-2">
+                    <div class="menu-item"><p class="menu-item-name">DAIKON ROLL (3 PIECES)</p><p class="menu-item-price">€13.50</p></div>
+                    <div class="menu-item"><p class="menu-item-name">SPICY TUNA SASHIMI (2 PIECES)</p><p class="menu-item-price">€17.00</p></div>
+                    <div class="menu-item"><p class="menu-item-name">BAJA CEVICHE (2 PIECES)</p><p class="menu-item-price">€12.50</p></div>
+                    <div class="menu-item"><p class="menu-item-name">MISO CORVINA (2 PIECES)</p><p class="menu-item-price">€17.00</p></div>
+                    <div class="menu-item"><p class="menu-item-name">TACOS DE CARNITAS (2 PIECES)</p><p class="menu-item-price">€14.50</p></div>
+                    <div class="menu-item"><p class="menu-item-name">BAO WITH CRISPY OYSTER MUSHROOM (2 PIECES)</p><p class="menu-item-price">€12.50</p></div>
+                    <div class="menu-item"><p class="menu-item-name">BAO WITH PORK BELLY (2 PIECES)</p><p class="menu-item-price">€14.50</p></div>
+                    <div class="menu-item"><p class="menu-item-name">MINCED DUCK</p><p class="menu-item-price">€13.00</p></div>
+                    <div class="menu-item"><p class="menu-item-name">TORI KARAAGE (6 PIECES)</p><p class="menu-item-price">€12.00</p></div>
+                    <div class="menu-item"><p class="menu-item-name">GRILLED POINTED CABBAGE</p><p class="menu-item-price">€14.00</p></div>
+                    <div class="menu-item"><p class="menu-item-name">GRILLED EGGPLANT</p><p class="menu-item-price">€14.00</p></div>
+                    <div class="menu-item"><p class="menu-item-name">BEEF TATAKI</p><p class="menu-item-price">€15.00</p></div>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Main Course</h3>
+                <div class="space-y-2">
+                     <div class="menu-item"><p class="menu-item-name">BEEF SHORT RIBS (500g)</p><p class="menu-item-price">€37.00</p></div>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">Sides</h3>
+                <div class="space-y-2">
+                    <div class="menu-item"><p class="menu-item-name">FRIES with mayonnaise</p><p class="menu-item-price">€5.00</p></div>
+                    <div class="menu-item"><p class="menu-item-name">NOODLE SALAD</p><p class="menu-item-price">€7.00</p></div>
+                    <div class="menu-item"><p class="menu-item-name">CHIMICHURRI FRIES</p><p class="menu-item-price">€9.00</p></div>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">Desserts</h3>
+                <div class="space-y-2">
+                    <div class="menu-item"><p class="menu-item-name">CHOCOLATE ICE CREAM MOCHI (2 PIECES)</p><p class="menu-item-price">€9.00</p></div>
+                    <div class="menu-item"><p class="menu-item-name">NY CHEESECAKE BRÛLÉE</p><p class="menu-item-price">€8.00</p></div>
+                    <div class="menu-item"><p class="menu-item-name">SPECIAL COFFEE</p><p class="menu-item-price">€8.50</p></div>
+                    <div class="menu-item"><p class="menu-item-name">ESPRESSO MARTINI</p><p class="menu-item-price">€14.00</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="drinks-menu-content" hidden>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8">
+            <div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Beer</h3>
+                <div class="space-y-2">
+                    <div class="menu-item"><p class="menu-item-name">HEINEKEN PILS 5%</p><p class="menu-item-price">€3.75</p></div>
+                    <div class="menu-item"><p class="menu-item-name">IJWIT 6.5%</p><p class="menu-item-price">€5.95</p></div>
+                    <div class="menu-item"><p class="menu-item-name">BULLEBAK 7.7%</p><p class="menu-item-price">€6.50</p></div>
+                    <div class="menu-item"><p class="menu-item-name">VEDETT EXTRA WHITE 4.7%</p><p class="menu-item-price">€5.95</p></div>
+                </div>
+                 <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">No & Low</h3>
+                <div class="space-y-2">
+                    <div class="menu-item"><p class="menu-item-name">HEINEKEN 0.0</p><p class="menu-item-price">€4.50</p></div>
+                    <div class="menu-item"><p class="menu-item-name">AFFLIGEM BLOND 0.0</p><p class="menu-item-price">€5.50</p></div>
+                    <div class="menu-item"><p class="menu-item-name">VRIJWIT 0.5%</p><p class="menu-item-price">€5.50</p></div>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Soda & Cocktails</h3>
+                <div class="space-y-2">
+                    <div class="menu-item"><p class="menu-item-name">COCA COLA | COLA ZERO</p><p class="menu-item-price">€3.75</p></div>
+                    <div class="menu-item"><p class="menu-item-name">LIPTON ICE TEA</p><p class="menu-item-price">€3.75</p></div>
+                    <div class="menu-item"><p class="menu-item-name">FROZEN MARGARITA</p><p class="menu-item-price">€12.95</p></div>
+                    <div class="menu-item"><p class="menu-item-name">CLASSIC MOJITO</p><p class="menu-item-price">€10.95</p></div>
+                    <div class="menu-item"><p class="menu-item-name">DARK & STORMY</p><p class="menu-item-price">€10.95</p></div>
+                    <div class="menu-item"><p class="menu-item-name">ESPRESSO MARTINI</p><p class="menu-item-price">€13.95</p></div>
+                </div>
+            </div>
+            <div>
+                 <h3 class="text-xl font-semibold text-gray-800 mb-3">Pitchers (1.5L)</h3>
+                <div class="space-y-2">
+                    <div class="menu-item"><p class="menu-item-name">SANGRIA CLASICA</p><p class="menu-item-price">€29.50</p></div>
+                    <div class="menu-item"><p class="menu-item-name">MOSCOW MULE</p><p class="menu-item-price">€39.50</p></div>
+                    <div class="menu-item"><p class="menu-item-name">TANQUERAY & TONIC</p><p class="menu-item-price">€39.50</p></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="module">
@@ -277,11 +383,9 @@
                 db = getFirestore(app);
                 auth = getAuth(app);
                 
-                // Listen for authentication state changes FIRST
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         userId = user.uid;
-                        console.log("User authenticated with UID:", userId);
                         loadRsvps();
                     } else {
                         signInAnonymously(auth).catch(authError => {
@@ -296,22 +400,38 @@
                 showMessageBox("Failed to initialize the app. Please check your Firebase configuration and internet connection.");
             }
 
-            // --- UI and Event Listeners ---
+            // --- Menu Modal Logic ---
+            const menuModal = document.getElementById('menuModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            const dinnerMenuBtn = document.getElementById('dinnerMenuBtn');
+            const drinksMenuBtn = document.getElementById('drinksMenuBtn');
+            const closeModalBtn = document.querySelector('.close-button');
 
-            // Tab switching logic
-            const tabButtons = document.querySelectorAll('.tab-button');
-            const tabContents = document.querySelectorAll('.tab-content');
-            tabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    tabContents.forEach(content => content.classList.remove('active'));
-                    button.classList.add('active');
-                    const targetContent = document.getElementById(`${button.dataset.tab}-content`);
-                    if (targetContent) targetContent.classList.add('active');
-                });
+            dinnerMenuBtn.addEventListener('click', () => {
+                modalTitle.textContent = 'Dinner Menu';
+                modalBody.innerHTML = document.getElementById('dinner-menu-content').innerHTML;
+                menuModal.style.display = 'flex';
             });
 
-            // RSVP submission logic
+            drinksMenuBtn.addEventListener('click', () => {
+                modalTitle.textContent = 'Drinks Menu';
+                modalBody.innerHTML = document.getElementById('drinks-menu-content').innerHTML;
+                menuModal.style.display = 'flex';
+            });
+
+            const closeModal = () => {
+                menuModal.style.display = 'none';
+            };
+
+            closeModalBtn.addEventListener('click', closeModal);
+            window.addEventListener('click', (event) => {
+                if (event.target == menuModal) {
+                    closeModal();
+                }
+            });
+
+            // --- RSVP Logic ---
             const rsvpNameInput = document.getElementById('rsvpNameInput');
             const rsvpSubmitButton = document.getElementById('rsvpSubmitButton');
 
@@ -376,18 +496,16 @@
                     attendeesList.innerHTML = '';
                     if (snapshot.empty) {
                         const emptyItem = document.createElement('li');
-                        emptyItem.className = 'text-gray-500 col-span-full'; // Span across all columns
+                        emptyItem.className = 'text-gray-500 col-span-full';
                         emptyItem.textContent = 'No attendees yet. Be the first!';
                         attendeesList.appendChild(emptyItem);
                     } else {
-                        // Use the index from the snapshot docs array for numbering
                         snapshot.docs.forEach((docSnap, index) => {
                             const rsvp = docSnap.data();
                             const listItem = document.createElement('li');
                             listItem.className = 'attendee-item';
 
                             const nameSpan = document.createElement('span');
-                            // Use index + 1 for a 1-based count
                             nameSpan.textContent = `${index + 1}. ${rsvp.name}`; 
                             listItem.appendChild(nameSpan);
 
